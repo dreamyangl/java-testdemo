@@ -28,6 +28,5 @@ public class TestQueue {
         //使用ReentrantLock
         LinkedBlockingQueue linkedBlockingQueue = new LinkedBlockingQueue();
         linkedBlockingQueue.add(1);
-
     }
 }
