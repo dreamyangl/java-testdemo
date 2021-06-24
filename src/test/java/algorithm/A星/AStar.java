@@ -1,4 +1,4 @@
-package algorithm;
+package algorithm.A星;
 
 import java.util.ArrayList;
 

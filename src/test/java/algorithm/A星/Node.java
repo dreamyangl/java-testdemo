@@ -1,4 +1,4 @@
-package algorithm;
+package algorithm.A星;
 
 public class Node {
     private int x; //x坐标
