@@ -3,7 +3,7 @@ package algorithm;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LickHasCircle {
+public class LinkHasCircle {
     public boolean hasCycle(ListNode head) {
         Set<ListNode> set = new HashSet<>();
         while (head != null) {
