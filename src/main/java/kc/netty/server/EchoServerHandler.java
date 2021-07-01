@@ -7,11 +7,15 @@ import io.netty.util.CharsetUtil;
 
 @ChannelHandler.Sharable // 标识这类的实例之间可以在 channel 里面共享
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
+    int counter = 0;
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf in = (ByteBuf) msg;
-        System.out.println("Server received: " + in.toString(CharsetUtil.UTF_8));
-        ctx.write(in); // 将所接收的消息返回给发送者
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        ByteBuf bb = (ByteBuf) msg;
+        byte[] b = new byte[bb.readableBytes()];
+        bb.readBytes(b);
+        System.out.println("收到客户端数据："+new String(b));
+        ByteBuf bf = Unpooled.copiedBuffer(("你好客户端："+Math.random()).getBytes());
+        ctx.writeAndFlush(bf);
     }
 
     @Override

@@ -1,8 +1,9 @@
 import org.junit.Test;
 
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -17,16 +18,38 @@ import java.util.concurrent.LinkedBlockingQueue;
  *     3.关于插入元素的性能，从字面上和代码简单的分析来看ConcurrentLinkedQueue肯定是最快的，但是这个也要看具体的测试场景，我做了两个简单的demo做测试，测试的结果如下，两个的性能差不多，但在实际的使用过程中，尤其在多cpu的服务器上，有锁和无锁的差距便体现出来了，ConcurrentLinkedQueue会比LinkedBlockingQueue快很多：
  */
 public class TestQueue {
+    private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     @Test
-    public void test1() {
+    public static void main() {
         //线程不安全
         LinkedList linkedList = new LinkedList();
         linkedList.add(1);
         //cas实现
         ConcurrentLinkedQueue concurrentLinkedQueue = new ConcurrentLinkedQueue();
         concurrentLinkedQueue.add(1);
+        concurrentLinkedQueue.add(2);
+        concurrentLinkedQueue.add(3);
+        concurrentLinkedQueue.add(4);
+        concurrentLinkedQueue.add(5);
+        concurrentLinkedQueue.add(6);
         //使用ReentrantLock
         LinkedBlockingQueue linkedBlockingQueue = new LinkedBlockingQueue();
         linkedBlockingQueue.add(1);
+
+    }
+
+    public static void main(String[] args) {
+        //cas实现
+        ConcurrentLinkedQueue concurrentLinkedQueue = new ConcurrentLinkedQueue();
+        concurrentLinkedQueue.add(1);
+        concurrentLinkedQueue.add(2);
+        concurrentLinkedQueue.add(3);
+        concurrentLinkedQueue.add(4);
+        concurrentLinkedQueue.add(5);
+        concurrentLinkedQueue.add(6);
+        for (int i = 0; i < 10; i++) {
+            executorService.execute(()-> System.out.println(Thread.currentThread().getName()+":"+concurrentLinkedQueue.poll()));
+        }
+
     }
 }

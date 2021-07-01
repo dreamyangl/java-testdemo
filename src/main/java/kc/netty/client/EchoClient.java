@@ -1,14 +1,14 @@
 package kc.netty.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.net.InetSocketAddress;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class EchoClient {
 
@@ -35,9 +35,10 @@ public class EchoClient {
                         }
                     });
 
-            ChannelFuture future = bootstrap.connect().sync(); // 连接到远程；等待连接完成
-
-            future.channel().closeFuture().sync(); // 阻塞到远程; 等待连接完成
+            ChannelFuture future = bootstrap.connect().sync();
+            future.channel()
+                    .closeFuture()
+                    .sync(); // 阻塞到远程; 等待连接完成
         } finally {
             group.shutdownGracefully().sync(); // 关闭线程池和释放所有资源
         }
