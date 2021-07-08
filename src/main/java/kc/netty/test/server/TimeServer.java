@@ -45,7 +45,9 @@ class TimeServerHandler extends ChannelInboundHandlerAdapter{
 		byte[] b = new byte[bb.readableBytes()];
 		bb.readBytes(b);
 		System.out.println("收到客户端数据："+new String(b));
-		ByteBuf bf = Unpooled.copiedBuffer(("你好客户端$$1111111："+Math.random()).getBytes());
-		ctx.writeAndFlush(bf);
+//		ByteBuf bf = Unpooled.copiedBuffer(("你好客户端$$1111111："+Math.random()).getBytes());
+//		ctx.writeAndFlush(bf);
+//		ctx.flush();
+		((ByteBuf) msg).release(); // (3)
 	}
 }

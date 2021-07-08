@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 class MessageHandler extends ChannelInboundHandlerAdapter {
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
-    public static ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
+    public static volatile ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         System.out.println("关闭客户端连接");
