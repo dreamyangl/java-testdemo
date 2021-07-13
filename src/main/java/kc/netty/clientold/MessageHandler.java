@@ -1,4 +1,4 @@
-package kc.netty.client;
+package kc.netty.clientold;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -57,18 +57,18 @@ public class MessageHandler extends ChannelInboundHandlerAdapter {
 //                e.printStackTrace();
 //            }
 //        }
-		new Thread(() -> {
-            while(true) {
+        new Thread(() -> {
+            while (true) {
                 String body = concurrentLinkedQueue.poll();
 //					System.out.println(Thread.currentThread().getName()+":"+body);
-//					String body = "你好服务端：+Math.random())";
-                if (StringUtils.isEmpty(body)){
+//                String body = "你好服务端：+Math.random())";
+                if (StringUtils.isEmpty(body)) {
                     continue;
                 }
                 ByteBuf bf = Unpooled.copiedBuffer(body.getBytes());
                 ctx.writeAndFlush(bf);
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -77,11 +77,15 @@ public class MessageHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+    }
+
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf bb = (ByteBuf) msg;
         byte[] b = new byte[bb.readableBytes()];
         bb.readBytes(b);
-        System.out.println(Thread.currentThread().getName()+":收到服务器端数据：" + new String(b));
-        doSomeThing.test(new String(b));
+        System.out.println(Thread.currentThread().getName() + ":收到服务器端数据：" + new String(b));
+//        doSomeThing.test(new String(b));
     }
 }

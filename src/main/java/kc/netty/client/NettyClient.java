@@ -1,61 +1,74 @@
 package kc.netty.client;
- 
- 
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
- 
+
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoop;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
-import kc.service.DoSomeThing;
-import kc.util.SpringBeanFactory;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
-public class NettyClient {
-	public static void connect(int port,String host) throws Exception{
-		NioEventLoopGroup group = new NioEventLoopGroup();
-		try {
-			Bootstrap b = new Bootstrap();
-			b.group(group).channel(NioSocketChannel.class)
-			.option(ChannelOption.SO_KEEPALIVE, true)
-			.handler(new ChannelInitializer<SocketChannel>() {
+import java.util.concurrent.TimeUnit;
 
-				@Override
-				protected void initChannel(SocketChannel ch) throws Exception {
-					ByteBuf delimiter = Unpooled.copiedBuffer("$".getBytes());
-					//创建DelimiterBasedFrameDecoder对象，将其加入到ChannelPipeline中。
-					//DelimiterBasedFrameDecoder有多个构造方法，这里我们传递两个参数，
-					//第一个1024表示单条消息的最大长度，当达到该长度后仍然没有查找到分隔符，
-					//就抛出TooLongFrame Exception异常，防止由于异常码流缺失分隔符导致的内存溢出，
-					//这是Netty解码器的可靠性保护；第二个参数就是分隔符缓冲对象。
-					ch.pipeline().addLast(new DelimiterBasedFrameDecoder(1024,delimiter));
-//					ch.pipeline().addLast(new StringDecoder());
-					ch.pipeline().addLast(new MessageHandler());
-				}
-			});
-			ChannelFuture f = b.connect(host, port);
-			f.addListener(new ConnectionListener());
-			f.channel().closeFuture().sync();
-		} finally {
-			//group.shutdownGracefully();
-		}
-	}
-	public static void main(String[] args){
-		try {
-			connect(10007, "127.0.0.1");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+/**
+ * @Description 客户端
+ * @Created CaoGang
+ * @Date 2021/7/8 11:29
+ * @Version 1.0
+ */
+@Slf4j
+@Data
+public class NettyClient{
+    private String  IP;
+    private Integer PORT;
+    private Channel channel;
+    Bootstrap bootstrap;
+
+    public String getIpAndPort(){
+        return getIP()+"_"+getPORT();
+    }
+    public NettyClient(){
+
+    }
+    public NettyClient(String ip,Integer port) {
+        this.IP = ip;
+        this.PORT = port;
+    }
+
+    /**
+     * 创建连接
+     */
+    public void connect() {
+        EventLoopGroup group = new NioEventLoopGroup();
+        Bootstrap bootstrap = new Bootstrap();
+        //设置工作线程
+        bootstrap.group(group)
+                //初始化channel
+                .channel(NioSocketChannel.class)
+                //该参数的作用就是禁止使用Nagle算法，使用于小数据即时传输
+                .option(ChannelOption.TCP_NODELAY, true);
+                //设置handler管道
+                bootstrap.handler(
+                        new ChannelInitializer<Channel>() {
+                            @Override
+                            protected void initChannel(Channel channel){
+                                //channel.pipeline().addLast(new StringDecoder());
+                                channel.pipeline().addLast(new StringEncoder());
+                                // 指定时间内未收到服务端的数据,就向服务端发一个数据包
+                                channel.pipeline().addLast(new IdleStateHandler(
+                                        0, 10, 0, TimeUnit.SECONDS));
+                                // 消息接收的监听类
+                                channel.pipeline().addLast(new NettyClientHandler(NettyClient.this));
+                            }
+                });
+        // 开始连接服务端
+        try {
+            ChannelFuture future = bootstrap.connect(IP, PORT);
+            future.addListener(new ConnectionListener(NettyClient.this));
+            channel = future.channel();
+        }catch (Exception e){
+            log.info("netty connect error [{}]",e.getMessage());
+        }
+    }
 }

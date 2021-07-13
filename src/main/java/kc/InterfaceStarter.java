@@ -1,9 +1,7 @@
 package kc;
 
-import kc.netty.client.MessageHandler;
-import kc.netty.client.NettyClient;
+import kc.netty.clientold.NettyClient;
 import kc.netty.server.TimeServer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,6 +39,6 @@ public class InterfaceStarter implements CommandLineRunner {
                 }
             }
         }).start();
-//        NettyClient.connect(10007,"127.0.0.1");
+        NettyClient.connect(10007,"127.0.0.1");
     }
 }

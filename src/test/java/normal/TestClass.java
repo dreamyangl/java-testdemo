@@ -1,5 +1,6 @@
 package normal;
 
+import com.alibaba.fastjson.JSONObject;
 import testjava8.Test;
 
 public class TestClass {
@@ -45,5 +46,7 @@ public class TestClass {
         testClass.setId(1);
         testClass.setName("test");
         System.out.println(testClass.getAge());
+
+        System.out.println(JSONObject.toJSONString(testClass));
     }
 }
