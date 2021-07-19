@@ -1,6 +1,6 @@
 import org.junit.Test;
 
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TestQueue {
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     @Test
-    public static void main() {
+    public void test2() {
         //线程不安全
         LinkedList linkedList = new LinkedList();
         linkedList.add(1);
@@ -51,5 +51,16 @@ public class TestQueue {
             executorService.execute(()-> System.out.println(Thread.currentThread().getName()+":"+concurrentLinkedQueue.poll()));
         }
 
+    }
+
+    @Test
+    public void test1() {
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.remove(0);
+        list.get(0);
+        list.stream().forEach(System.out::println);
     }
 }
