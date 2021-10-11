@@ -30,7 +30,7 @@ public class TestNettyClient {
     @PostConstruct
     public void startNettyClient(){
         List<SocketInfosPO> ledInfos = new ArrayList<>();
-        ledInfos.add(new SocketInfosPO("172.31.218.244",10007));
+        ledInfos.add(new SocketInfosPO("172.31.218.244",10007,1));
         /*ledInfos.add(new LedInfos("172.31.252.47",8002));
         ledInfos.add(new LedInfos("172.31.252.47",8003));
         ledInfos.add(new LedInfos("172.31.252.47",8004));

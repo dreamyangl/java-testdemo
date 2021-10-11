@@ -1,12 +1,14 @@
 package kc.struct;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -19,6 +21,8 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@ToString
 public class SocketInfosPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,5 +30,26 @@ public class SocketInfosPO implements Serializable {
     private String ip;
 
     private Integer port;
+
+    private Integer ipI;
+
+    public static void main(String[] args) {
+        SocketInfosPO socketInfosPO1 = SocketInfosPO.builder()
+                .ip("5")
+                .port(8080)
+                .build();
+
+        SocketInfosPO socketInfosPO2 = SocketInfosPO.builder()
+                .ip("2")
+                .port(8080)
+                .build();
+
+        SocketInfosPO socketInfosPO3 = SocketInfosPO.builder()
+                .ip("3")
+                .port(8080)
+                .build();
+        List<SocketInfosPO> list = Stream.of(socketInfosPO1,socketInfosPO2,socketInfosPO3).collect(Collectors.toList());
+        list.stream().filter(x->!"-".equals(x.getIp())).peek(x-> x.setIpI(Integer.parseInt(x.getIp()))).sorted(Comparator.comparing(SocketInfosPO::getIpI)).forEach(System.out::println);
+    }
 
 }
