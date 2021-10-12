@@ -1,4 +1,4 @@
-package kc.netty.client;
+package kc.netty.client.tcp;
 
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;

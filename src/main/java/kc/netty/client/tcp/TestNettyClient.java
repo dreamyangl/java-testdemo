@@ -1,4 +1,4 @@
-package kc.netty.client;
+package kc.netty.client.tcp;
 
 import kc.struct.SocketInfosPO;
 import lombok.extern.slf4j.Slf4j;

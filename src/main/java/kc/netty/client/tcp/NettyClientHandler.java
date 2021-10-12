@@ -1,4 +1,4 @@
-package kc.netty.client;
+package kc.netty.client.tcp;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

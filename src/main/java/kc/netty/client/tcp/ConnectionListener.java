@@ -1,4 +1,4 @@
-package kc.netty.client;
+package kc.netty.client.tcp;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
